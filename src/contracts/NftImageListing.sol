@@ -14,24 +14,22 @@ contract NftImageListing is IERC721Receiver {
         ERC721 nftContract;
         address seller;
         uint256 tokenId;
-        uint price;
-        bool isReadyForSale;
+        uint256 price;
     }
 
-    function onERC721Received(address, address from, uint256 tokenId, bytes calldata) override external returns(bytes4) {
+    function onERC721Received(address, address from, uint256 tokenId, bytes calldata data) override external returns(bytes4) {
         allListings.push(ListingDetails({
             nftContract: ERC721(msg.sender),
             seller: from,
             tokenId: tokenId,
-            price: 0,
-            isReadyForSale: false
+            price: toUint256(data)
         }));
 
         listingCount ++;
         return IERC721Receiver.onERC721Received.selector;
     }
 
-    function setPrice(uint listingId, uint price) external {
+    function setPrice(uint listingId, uint256 price) external {
         // make sure listing exists
         require(listingId < allListings.length, "Listing doesn't exist!");
 
@@ -44,7 +42,6 @@ contract NftImageListing is IERC721Receiver {
         listing.price = price;
 
         // mark ready for sale
-        listing.isReadyForSale = true;
         allListings[listingId] = listing;
     }
 
@@ -53,9 +50,6 @@ contract NftImageListing is IERC721Receiver {
         require(listingId < allListings.length, "Listing doesn't exist!");
 
         ListingDetails memory listing = allListings[listingId];
-        
-        // make sure listing is for sale
-        require(listing.isReadyForSale, "Listing is not ready for sale yet!");
 
         // make sure the msg value is the right price
         require(msg.value >= listing.price);
@@ -86,4 +80,10 @@ contract NftImageListing is IERC721Receiver {
         // length --;
         allListings.pop();
     }
+
+    function toUint256(bytes memory _bytes) internal pure returns (uint256 value) {
+            assembly {
+            value := mload(add(_bytes, 0x20))
+            }
+        }
 }

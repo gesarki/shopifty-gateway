@@ -93,8 +93,12 @@ contract('NftImage', (accounts) => {
 
     describe('selling', async() => {
         it('transfers image to listing contract', async() => {
+            const price = web3.utils.toWei('0.3', 'Ether');
+            const priceHex = web3.utils.numberToHex(price)
+            const priceBytes = web3.utils.padLeft(priceHex, 64)
+
             // transfer image 0 to image listing contract
-            const result = await contract.safeTransferFrom(accounts[0], listings.address, 0)
+            const result = await contract.safeTransferFrom(accounts[0], listings.address, 0, priceBytes)
 
             // check owner of img 0
             const owner = await contract.ownerOf(0)
@@ -103,22 +107,12 @@ contract('NftImage', (accounts) => {
             // get first listing in allListings
             const listing = await listings.allListings(0)
 
-            // make sure seller, contract and tokenId is correct
+            // make sure seller, contract, price and tokenId is correct
             assert.equal(listing.seller, accounts[0], 'listing seller is incorrect')
             assert.equal(listing.tokenId, '0', 'listing tokenId is incorrect')
             assert.equal(listing.nftContract, contract.address, 'listing nftContract address is incorrect')
+            assert.equal(listing.price, price, 'listing price is incorrect')
 
-            // make sure listing is not ready to sell yet
-            assert.isFalse(listing.isReadyForSale, 'listing should not be ready for sale yet')
-        })
-
-        it('sets price of listing', async() => {
-            const price = web3.utils.toWei('0.1', 'Ether')
-            await listings.setPrice(0, price)
-
-            const listing = await listings.allListings(0)
-            assert.equal(listing.price, price, 'listing price was not set')
-            assert.isTrue(listing.isReadyForSale, 'listing should be ready for sale now')
         })
 
         it('does not allow non seller to set listing price', async() => {
@@ -140,7 +134,6 @@ contract('NftImage', (accounts) => {
 
             const listing = await listings.allListings(0)
             assert.equal(listing.price, price, 'listing price was not updated correctly')
-            assert.isTrue(listing.isReadyForSale, 'listing should still be ready for sale')
         })
     })
 

@@ -33,8 +33,6 @@ contract NftImage is ERC721Enumerable {
         _;
     }
 
-    event imagePutUpForSale(uint id, uint price);
-
 
     function mint(string memory _hash, string memory _description) public {
         // make sure hash exists
@@ -54,52 +52,4 @@ contract NftImage is ERC721Enumerable {
         // increase total image count
         imageCount++;
     }
-
-    // function putImageUpForSale(uint _imageId, uint _price, address _address) validId(_imageId) isOwner(_imageId) public {
-    //     NftImageListing candidateContract = NftImageListing(_address);
-
-    //     Image memory img = images[_imageId];
-
-    //     // make sure the image isn't already for sale
-    //     require(!img.isForSale, "Image is already for sale!");
-
-    //     // add this contract as approved
-    //     approve(address(this), _imageId);
-
-    //     // set the image price, isForSale = true
-    //     img.price = _price;
-    //     img.isForSale = true;
-
-    //     // put it back in the list
-    //     images[_imageId] = img;
-
-    //     // emit imagePutUpForSale
-    //     emit imagePutUpForSale(_imageId, _price);
-    // }
-
-    // function buyImage(uint _imageId) validId(_imageId) public payable {
-    //     // make sure image is on sale
-    //     Image memory img = images[_imageId];
-    //     require(img.isForSale, "Trying to buy an image that's not on sale!");
-
-    //     // make sure msg.sender isn't the current owner
-    //     address payable owner = payable(ownerOf(_imageId));
-    //     require(owner != msg.sender, "Trying to buy an image you already own!");
-
-    //     // make sure msg.value is == image.price
-    //     require(msg.value >= img.price);
-
-    //     // transfer msg.value to img owner
-    //     owner.transfer(msg.value);
-
-    //     // make sure this contract is approved on this token **TO REMOVE **
-    //     require(getApproved(_imageId) == address(this), "Contract isn't set as approved!");
-
-    //     // transfer image from owner to new owner (also clear's contract's approval)
-    //     safeTransferFrom(owner, msg.sender, _imageId);
-
-    //     // set image back to not on sale
-    //     img.isForSale = false;
-    //     images[_imageId] = img;
-    // }
 }
