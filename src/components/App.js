@@ -120,9 +120,11 @@ class App extends Component {
       this.setState({ waitConfirmation: false, loading: false })
       window.alert("there was an error with the transaction!")
     }).on('confirmation', (number, receipt) => {
-      this.setState({ images:[]});
-      this.loadBlockchainData();
-      this.setState({ waitConfirmation: false })
+      if (this.state.waitConfirmation) {
+        this.setState({ images:[]});
+        this.loadBlockchainData();
+        this.setState({ waitConfirmation: false })
+      }
     });
   }
 
@@ -133,9 +135,11 @@ class App extends Component {
       this.loadBlockchainData();
       this.setState({ loading: false, waitConfirmation: true })
     }).on('confirmation', (number, receipt) => {
-      this.setState({ images:[]});
-      this.loadBlockchainData();
-      this.setState({ waitConfirmation: false })
+      if (this.state.waitConfirmation) {
+        this.setState({ images:[]});
+        this.loadBlockchainData();
+        this.setState({ waitConfirmation: false })
+      }
     });
   }
 
@@ -152,9 +156,11 @@ class App extends Component {
       this.loadBlockchainData();
       this.setState({ loading: false, waitConfirmation: true })
     }).on('confirmation', (number, receipt) => {
-      this.setState({ images:[]});
-      this.loadBlockchainData();
-      this.setState({ waitConfirmation: false })
+      if (this.state.waitConfirmation) {
+        this.setState({ images:[]});
+        this.loadBlockchainData();
+        this.setState({ waitConfirmation: false })
+      }
     });
   }
 
@@ -167,9 +173,11 @@ class App extends Component {
       this.loadBlockchainData();
       this.setState({ loading: false, waitConfirmation: true })
     }).on('confirmation', (number, receipt) => {
-      this.setState({ images:[]});
-      this.loadBlockchainData();
-      this.setState({ waitConfirmation: false })
+      if (this.state.waitConfirmation) {
+        this.setState({ images:[]});
+        this.loadBlockchainData();
+        this.setState({ waitConfirmation: false })
+      }
     });
   }
 
