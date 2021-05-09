@@ -14,7 +14,9 @@ class App extends Component {
 
   async componentDidMount() {
     await this.loadWeb3()
-    await this.loadBlockchainData()
+    if (window.web3) {
+      await this.loadBlockchainData()
+    }
   }
 
   async loadWeb3() {
@@ -27,6 +29,7 @@ class App extends Component {
     }
     else {
       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+      this.setState({nonEthereum: true, loading: false})
     }
   }
 
@@ -147,8 +150,12 @@ class App extends Component {
     this.state.nftImage.methods.safeTransferFrom(this.state.account, this.state.nftImageListing.options.address, imageId, priceBytes).send({ from: this.state.account }).on('transactionHash', async (hash) => {
       this.setState({ images:[]});
       this.loadBlockchainData();
-      this.setState({ loading: false })
-    })
+      this.setState({ loading: false, waitConfirmation: true })
+    }).on('confirmation', (number, receipt) => {
+      this.setState({ images:[]});
+      this.loadBlockchainData();
+      this.setState({ waitConfirmation: false })
+    });
   }
 
   updatePrice(imageId, price) {
@@ -173,7 +180,8 @@ class App extends Component {
       nftImage: null,
       images: [],
       loading: true,
-      waitConfirmation: false
+      waitConfirmation: false,
+      nonEthereum: false
     }
 
     this.uploadImage = this.uploadImage.bind(this)
@@ -187,18 +195,21 @@ class App extends Component {
     return (
       <div>
         <Navbar account={this.state.account} />
-        { this.state.waitConfirmation ? 
-          <div className="text-center mt-5 fixed-top">
-            <span>awaiting confirmation</span> 
-            <div className="spinner-border d-inline-block text-success" role="status">
-              <span class="visually-hidden">Loading...</span>
+        { this.state.waitConfirmation 
+          ? <div className="text-center mt-5 fixed-top">
+              <span>awaiting confirmation</span> 
+              <div className="spinner-border d-inline-block text-success" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
             </div>
-          </div>
-        : <span></span>
+          : <span></span>
         }
         { this.state.loading
           ? <div id="loader" className="text-center mt-5"><p>Loading...</p></div>
-          : <Main
+          : <span></span>
+        }
+        { !this.state.loading && !this.state.nonEthereum
+          ? <Main
               images={this.state.images}
               account={this.state.account}
               captureFile={this.captureFile}
@@ -208,6 +219,18 @@ class App extends Component {
               purchaseImage={this.purchaseImage}
 
             />
+          : <span></span>
+        }
+        {
+          this.state.nonEthereum
+          ? <div className="container"><div className="row mt-5">
+              <h2>You need an ethereum wallet provider such as <a href="https://metamask.io/">Metamask</a> to use this app!</h2>
+              <p>Download the browser extension and follow the startup steps to create an address.</p>
+              <p>Once You've created an ethereum address, switch to the Ropsten Test Network to use the app.</p>
+              <p>You'll know you did everything correctly when metamask asks you to allow this website to connect to your wallet and you see some images I've minted!</p>
+              <p><strong>Note:</strong> to buy NFT images you'll need some test ether in the ropsten network. You can get some from <a href="https://faucet.ropsten.be/">this popular faucet</a>.</p>
+            </div></div>
+          :  <span></span>
         }
       </div>
     );

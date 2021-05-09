@@ -49,6 +49,7 @@ class Main extends Component {
                       />
                       <small className="text-muted">{image.owner}</small>
                       { (image.owner === this.props.account) ? <small className="badge bg-info text-dark ms-2" >You!</small> : <span></span>}
+                      { image.isForSale ? <small className="badge bg-primary text-white ms-2" >For Sale!</small> : <span></span>}
                     </div>
                     <ul id="imageList" className="list-group list-group-flush">
                       <li className="list-group-item">
@@ -76,7 +77,7 @@ class Main extends Component {
                           <li key={key+"sell"} className="list-group-item py-2">
                           <form onSubmit={(event) => {
                             event.preventDefault()
-                            let price = this.listingPrice.value
+                            let price = image.newPrice
                             price = window.web3.utils.toWei(price, 'Ether')
                             this.props.putUpForSale(image.id, price)
                           }} >
@@ -86,7 +87,7 @@ class Main extends Component {
                                 id="listingPrice"
                                 type="number"
                                 step="any"
-                                ref={(input) => { this.listingPrice = input }}
+                                onChange={(event) => { image.newPrice = event.target.value }}
                                 className="form-control"
                                 placeholder="price in ETH, e.g. 0.001"
                                 required 
@@ -101,7 +102,7 @@ class Main extends Component {
                           <li key={key+"updatePrice"} className="list-group-item py-2">
                           <form onSubmit={(event) => {
                             event.preventDefault()
-                            let price = this.updatelistingPrice.value
+                            let price = image.newPrice
                             price = window.web3.utils.toWei(price, 'Ether')
                             this.props.updatePrice(image.listingId, price)
                           }} >
@@ -111,7 +112,7 @@ class Main extends Component {
                                 id="upateListingPrice"
                                 type="number"
                                 step="any"
-                                ref={(input) => { this.updatelistingPrice = input }}
+                                onChange={(event) => { image.newPrice = event.target.value }}
                                 className="form-control"
                                 placeholder="price in ETH, e.g. 0.001"
                                 required 
