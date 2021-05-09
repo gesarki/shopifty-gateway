@@ -19,7 +19,6 @@ contract NftImage is ERC721Enumerable {
         uint256 id;
         string hash;
         string description;
-        bool isForSale;
         uint256 price; // in WEI
     }
 
@@ -49,7 +48,7 @@ contract NftImage is ERC721Enumerable {
         _safeMint(msg.sender, imageCount);
 
         // track the image
-        images.push(Image(imageCount, _hash, _description, false, 0));
+        images.push(Image(imageCount, _hash, _description, 0));
         _hashExists[_hash] = true;
 
         // increase total image count
