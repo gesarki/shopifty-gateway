@@ -72,7 +72,7 @@ class App extends Component {
         this.setState({images});
       this.setState({ loading: false})
     } else {
-      window.alert('NftImage and Listing contracts not deployed to detected network.')
+      window.alert('NftImage and Listing contracts not deployed to detected network. Please switch to the Ropsten Test Network.')
     }
   }
 
