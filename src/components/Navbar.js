@@ -6,14 +6,11 @@ class Navbar extends Component {
   render() {
     return (
       <nav className="navbar navbar-dark fixed-top flex-md-nowrap p-0 shadow">
-        <a
+        <span
           className="navbar-brand col-sm-3 col-md-2 ms-3"
-          href="http://www.dappuniversity.com/bootcamp"
-          target="_blank"
-          rel="noopener noreferrer"
         >
           Shopifty Gateway
-        </a>
+        </span>
         <span className="navbar=text">
             <small className="text-secondary text-white">
               <small id="account">{this.props.account}</small>
